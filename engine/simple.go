@@ -6,7 +6,9 @@ import (
 	"../fetcher"
 )
 
-func Run(seeds ...Request) {
+type SimpleEngine struct{}
+
+func (e SimpleEngine) Run(seeds ...Request) {
 	var requests []Request
 
 	for _, r := range seeds {
