@@ -1,11 +1,16 @@
 package main
 
-import "net/http"
+import (
+	"./engine"
+
+	"./zhenai/parser"
+)
 
 func main() {
-	resp, err := http.Get("http://www.zhenai.com/zhenghun/shanghai")
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
+
+	engine.Run(engine.Request{
+		Url:        "http://www.zhenai.com/zhenghun",
+		ParserFunc: parser.ParseCityList,
+	})
+
 }
