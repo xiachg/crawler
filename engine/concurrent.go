@@ -44,6 +44,7 @@ func (e *ConcurrentEngine) Run(seeds ...Request) {
 }
 
 func createWorker(in chan Request, out chan ParseResult) {
+
 	go func() {
 		for {
 			request := <-in
@@ -54,4 +55,5 @@ func createWorker(in chan Request, out chan ParseResult) {
 			out <- result
 		}
 	}()
+
 }
