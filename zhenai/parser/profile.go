@@ -25,19 +25,21 @@ var carRe = regexp.MustCompile(`<td><span class="label">是否购车：</span><s
 
 func ParseProfile(contents []byte, name string) engine.ParseResult {
 	profile := model.Profile{}
+
 	profile.Name = name
+
 	age, err := strconv.Atoi(extractString(contents, ageRe))
-	if err != nil {
+	if err == nil {
 		profile.Age = age
 	}
 
 	height, err := strconv.Atoi(extractString(contents, heightRe))
-	if err != nil {
+	if err == nil {
 		profile.Height = height
 	}
 
 	weight, err := strconv.Atoi(extractString(contents, weightRe))
-	if err != nil {
+	if err == nil {
 		profile.Weight = weight
 	}
 
