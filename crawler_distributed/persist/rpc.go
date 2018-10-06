@@ -1,6 +1,8 @@
 package persist
 
 import (
+	"log"
+
 	"../../engine"
 	"../../persist"
 	"gopkg.in/olivere/elastic.v5"
@@ -15,8 +17,12 @@ func (s *ItemSaverService) Save(item engine.Item, result *string) error {
 
 	err := persist.Save(s.Client, s.Index, item)
 
+	log.Printf("Item %v Saved.", item)
+
 	if err == nil {
 		*result = "ok"
+	} else {
+		log.Printf("Error saving item %v : %v", item, err)
 	}
 
 	return err
