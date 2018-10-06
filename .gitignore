@@ -22,3 +22,4 @@ gen### Go template
 *.out
 
 /go_build_main_go
+/go_build_starter_go
