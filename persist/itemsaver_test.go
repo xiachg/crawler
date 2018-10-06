@@ -8,30 +8,31 @@ import (
 	"gopkg.in/olivere/elastic.v5"
 
 	"../model"
+
+	"../engine"
 )
 
 func TestSave(t *testing.T) {
 
-	expected := model.Profile{
-		Name:       "安静的雪",
-		Gender:     "女",
-		Age:        23,
-		Height:     162,
-		Weight:     57,
-		Income:     "3001-5000元",
-		Marriage:   "离异",
-		Education:  "大学本科",
-		Occupation: "人事/行政",
-		Hokou:      "中国上海",
-		Xinzuo:     "天使座",
-		House:      "已购房",
-		Car:        "未购车",
-	}
-
-	id, err := save(expected)
-
-	if err != nil {
-		panic(err)
+	expected := engine.Item{
+		Url:  "http://album.zhenai.com/u/1029982807",
+		Type: "zhenai",
+		Id:   "1029982807",
+		Payload: model.Profile{
+			Name:       "Lucy",
+			Gender:     "女",
+			Age:        22,
+			Height:     170,
+			Weight:     49,
+			Income:     "8001-12000元",
+			Marriage:   "未婚",
+			Education:  "大学本科",
+			Occupation: "财务/申计",
+			Hokou:      "上海浦东新区",
+			Xinzuo:     "狮子座",
+			House:      "和家人同住",
+			Car:        "未购车",
+		},
 	}
 
 	// TODO: Try to start up elastic search here using docker go client
@@ -41,7 +42,19 @@ func TestSave(t *testing.T) {
 		panic(err)
 	}
 
-	resp, err := client.Get().Index("dating_profile").Type("zhenai").Id(id).Do(context.Background())
+	const index string = "dating_test"
+
+	err = save(client, index, expected)
+
+	if err != nil {
+		panic(err)
+	}
+
+	resp, err := client.Get().
+		Index(index).
+		Type(expected.Type).
+		Id(expected.Id).
+		Do(context.Background())
 
 	if err != nil {
 		panic(err)
@@ -49,13 +62,13 @@ func TestSave(t *testing.T) {
 
 	t.Logf("%s", *resp.Source)
 
-	var actual model.Profile
+	var actual engine.Item
 
-	err = json.Unmarshal(*resp.Source, &actual)
+	json.Unmarshal(*resp.Source, &actual)
 
-	if err != nil {
-		panic(err)
-	}
+	actualProfile, _ := model.FromJsonObj(actual.Payload)
+
+	actual.Payload = actualProfile
 
 	if actual != expected {
 		t.Errorf("got %v; expected %v", actual, expected)
