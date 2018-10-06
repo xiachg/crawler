@@ -1,11 +1,10 @@
 package model
 
-import (
-	"../../engine"
-)
-
 type SearchResult struct {
-	Hits  int
-	Start int
-	Items []engine.Item
+	Hits     int64
+	Start    int
+	Query    string
+	PrevFrom int
+	NextFrom int
+	Items    []interface{}
 }

@@ -1,20 +1,19 @@
-package frontend
+package view
 
 import (
-	"html/template"
 	"os"
 	"testing"
 
-	"./model"
+	"../model"
 
-	"../engine"
+	"../../engine"
 
-	common "../model"
+	common "../../model"
 )
 
-func TestTemplate(t *testing.T) {
+func TestSearchResultView_Render(t *testing.T) {
 
-	template := template.Must(template.ParseFiles("template.html"))
+	view := CreateSearchResultView("template.html")
 
 	out, err := os.Create("template.test.html")
 
@@ -45,7 +44,7 @@ func TestTemplate(t *testing.T) {
 		page.Items = append(page.Items, item)
 	}
 
-	err = template.Execute(out, page)
+	err = view.Render(out, page)
 
 	if err != nil {
 		panic(err)
