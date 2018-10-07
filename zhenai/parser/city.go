@@ -8,9 +8,14 @@ import (
 
 const cityRe = `<a href="(http://album.zhenai.com/u/[0-9]+)"[^>]*>([^<]+)</a>`
 
+var (
+	profileRe = regexp.MustCompile(cityRe)
+	cityUrlRe = regexp.MustCompile(`href="(http://www.zhenai.com/zhenghun/[^"]+)"`)
+)
+
 func ParseCity(contents []byte) engine.ParseResult {
-	re := regexp.MustCompile(cityRe)
-	matches := re.FindAllSubmatch(contents, -1)
+
+	matches := profileRe.FindAllSubmatch(contents, -1)
 
 	result := engine.ParseResult{}
 
@@ -23,6 +28,15 @@ func ParseCity(contents []byte) engine.ParseResult {
 			ParserFunc: func(c []byte) engine.ParseResult {
 				return ParseProfile(c, url, name)
 			},
+		})
+	}
+
+	matches = cityUrlRe.FindAllSubmatch(contents, -1)
+
+	for _, m := range matches {
+		result.Requests = append(result.Requests, engine.Request{
+			Url:        string(m[1]),
+			ParserFunc: ParseCity,
 		})
 	}
 
