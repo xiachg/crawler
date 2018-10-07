@@ -3,6 +3,7 @@ package main
 import (
 	"../engine"
 
+	worker "../crawler_distributed/worker/client"
 	"../scheduler"
 	"../zhenai/parser"
 	"./persist/client"
@@ -16,10 +17,17 @@ func main() {
 		panic(err)
 	}
 
+	processor, err := worker.CreateProcessor()
+
+	if err != nil {
+		panic(err)
+	}
+
 	e := engine.ConcurrentEngine{
-		Scheduler:   &scheduler.QueuedScheduler{},
-		WorkerCount: 100,
-		ItemChan:    itemChan,
+		Scheduler:        &scheduler.QueuedScheduler{},
+		WorkerCount:      100,
+		ItemChan:         itemChan,
+		RequestProcessor: processor,
 	}
 
 	e.Run(engine.Request{

@@ -21,5 +21,4 @@ gen### Go template
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
-/go_build_main_go
-/go_build_starter_go
+/bin/
